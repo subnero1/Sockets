@@ -370,6 +370,19 @@ end
             send(b, ip"::1", randport, "Hello World")
             wait(tsk)
         end
+        close(a)
+        close(b)
+    end
+
+    # https://github.com/JuliaLang/julia/issues/57001
+    let
+        a = UDPSocket()
+        bind(a, ip"::1", UInt16(randport))
+        @sync begin
+            @async @test String(recv(a)) == "Hello World"
+            send(a, ip"::1", randport, "Hello World")
+        end
+        close(a)
     end
 end
 
