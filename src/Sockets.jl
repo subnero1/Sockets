@@ -343,11 +343,11 @@ function recvfrom(sock::UDPSocket)
     if sock.status != StatusInit && sock.status != StatusOpen && sock.status != StatusActive
         error("UDPSocket is not initialized and open")
     end
-    if ccall(:uv_is_active, Cint, (Ptr{Cvoid},), sock.handle) == 0
-        err = ccall(:uv_udp_recv_start, Cint, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}),
-                    sock,
-                    @cfunction(Base.uv_alloc_buf, Cvoid, (Ptr{Cvoid}, Csize_t, Ptr{Cvoid})),
-                    @cfunction(uv_recvcb, Cvoid, (Ptr{Cvoid}, Cssize_t, Ptr{Cvoid}, Ptr{Cvoid}, Cuint)))
+    err = ccall(:uv_udp_recv_start, Cint, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}),
+                sock,
+                @cfunction(Base.uv_alloc_buf, Cvoid, (Ptr{Cvoid}, Csize_t, Ptr{Cvoid})),
+                @cfunction(uv_recvcb, Cvoid, (Ptr{Cvoid}, Cssize_t, Ptr{Cvoid}, Ptr{Cvoid}, Cuint)))
+    if err < 0 && Base.uverrorname(err) != "EALREADY"
         uv_error("recv_start", err)
     end
     sock.status = StatusActive
