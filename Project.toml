@@ -1,5 +1,5 @@
 name = "Sockets"
-uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
+uuid = "8e05b789-fd94-4441-b170-a8660402c08d"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
